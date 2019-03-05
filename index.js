@@ -1,20 +1,36 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-const env = require('dotenv').config();
+const express = require("express");
+const app = express();
+const port = 5001;
+//Mongo staffs;
+const MongoClient = require("mongodb").MongoClient;
+const assert = require("assert");
+const env = require("dotenv").config();
+const url =
+    "mongodb+srv://" +
+    process.env.DB_USER +
+    ":" +
+    process.env.DB_PASS +
+    "@cluster0-tosfm.mongodb.net/test?retryWrites=true";
+const dbName = process.env.DB_NAME;
 
-// Connection URL
-const url = "mongodb+srv://"+process.env.DB_USER+":"+process.env.DB_PASS+"@cluster0-tosfm.mongodb.net/test?retryWrites=true";
-console.log(url);
-// Database Name
-const dbName = 'testDB';
-
-// Use connect method to connect to the server
-MongoClient.connect(url,{ useNewUrlParser: true }, function(err, client) {
+MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
     assert.equal(null, err);
     console.log("Connected successfully to server");
 
     const db = client.db(dbName);
-    const collection = db.collection('user');
-    collection.find().toArray((err, items) => {console.log(items)});
+    const collection = db.collection("user");
+    collection.find().toArray((err, items) => {
+        console.log(items);
+    });
     client.close();
 });
+
+app.get("/", (req, res) =>
+    res.send({ message: "sorry no endpoint available for this root path" })
+);
+
+app.get("/userAuth", (req, res) =>
+    res.send({ message: "sorry no endpoint available for this root path" })
+);
+
+app.listen(port, () => console.log(`Running on ${port}!`));
