@@ -1,4 +1,5 @@
 const BlogModel = require("../models/blog.model");
+const UserModel = require("../models/user.model");
 const express = require("express");
 const router = express.Router();
 const CryptoJS = require("crypto-js");
@@ -14,29 +15,40 @@ router.post("/blog", (req, res) => {
         console.log("Fields Are not Available in body");
         res.send({ status: false, error: "body is not available" });
     }
-
-    let blogModelData = {
+    UserModel.findOne({
         username: req.body.username,
-        blogData: CryptoJS.AES.encrypt(
-            JSON.stringify(req.body.blogdata),
-            process.env.ENC_KEY
-        ).toString(),
-        createdAt: new Date(),
-    };
-    let model = new BlogModel(blogModelData);
-    model
-        .save()
-        .then((doc) => {
-            let success = true;
-            if (!doc || doc.length === 0) {
-                success = false;
-            }
-            res.status(200).send({ success: success });
-        })
-        .catch((err) => {
-            console.log("err", err);
-            res.status(200).json({ success: false, error: err.errmsg });
-        });
+        password: CryptoJS.AES.decrypt(req.body.storedPassword, process.env.ENC_KEY).toString(
+            CryptoJS.enc.Utf8
+        ),
+    }).then((doc) => {
+        console.log(doc);
+        if (!doc || doc.length === 0) {
+            res.send({ success: false });
+        } else {
+            let blogModelData = {
+                username: req.body.username,
+                blogData: CryptoJS.AES.encrypt(
+                    JSON.stringify(req.body.blogdata),
+                    process.env.ENC_KEY
+                ).toString(),
+                createdAt: new Date(),
+            };
+            let model = new BlogModel(blogModelData);
+            model
+                .save()
+                .then((doc) => {
+                    let success = true;
+                    if (!doc || doc.length === 0) {
+                        success = false;
+                    }
+                    res.status(200).send({ success: success });
+                })
+                .catch((err) => {
+                    console.log("err", err);
+                    res.status(200).json({ success: false, error: err.errmsg });
+                });
+        }
+    });
 });
 
 // getAllBlogs
@@ -54,6 +66,8 @@ router.get("/getblogs", (req, res) => {
                 );
                 return elem;
             });
+            docLocal = docLocal.map((elem) => (elem.blogData = JSON.parse(elem.blogData)));
+
             res.status(200).send({ success: success, blogs: docLocal });
         })
         .catch((err) => {
