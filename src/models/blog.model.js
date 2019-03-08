@@ -8,17 +8,18 @@ const password = process.env.DB_PASS;
 
 mongoose.connect(`mongodb+srv://${user}:${password}@${server}/${database}`);
 
-let UserSchema = new mongoose.Schema({
+let BlogSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
     },
-    password: {
+    blogData: {
         type: String,
         required: true,
-        unique: false,
+    },
+    createdAt: {
+        type: Date,
     },
 });
 
-module.exports = mongoose.model("users", UserSchema);
+module.exports = mongoose.model("blogs", BlogSchema);
