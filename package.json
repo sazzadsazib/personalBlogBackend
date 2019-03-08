@@ -4,7 +4,7 @@
     "description": "",
     "main": "src/server.js",
     "scripts": {
-        "start": "npx nodemon"
+        "start": "node src/server.js"
     },
     "author": "SazzadSazib <sazib66@gmail.com> (sazzadsazib)",
     "license": "MIT",
