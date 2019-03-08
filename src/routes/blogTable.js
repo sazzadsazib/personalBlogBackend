@@ -66,7 +66,6 @@ router.get("/getblogs", (req, res) => {
                 );
                 return elem;
             });
-            docLocal = docLocal.map((elem) => (elem.blogData = JSON.parse(elem.blogData)));
 
             res.status(200).send({ success: success, blogs: docLocal });
         })
