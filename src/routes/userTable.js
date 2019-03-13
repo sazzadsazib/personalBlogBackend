@@ -11,15 +11,13 @@ router.post("/user", (req, res) => {
     }
 
     if (!req.body.username || !req.body.password) {
-        // console.log("Fields Are not Available in body");
         res.send({ success: false });
     }
 
     let userModelData = {
         username: req.body.username,
-        password: CryptoJS.SHA256(req.body.password).toString(),
+        password: req.body.password,
     };
-    console.log(userModelData);
 
     let model = new UserModel(userModelData);
     model
@@ -28,7 +26,6 @@ router.post("/user", (req, res) => {
             if (!doc || doc.length === 0) {
                 return res.status(500).send({ success: false });
             }
-
             res.status(201).send({ success: true });
         })
         .catch((err) => {
@@ -48,9 +45,8 @@ router.post("/userAuth", (req, res) => {
 
     let userModelData = {
         username: req.body.username,
-        password: CryptoJS.SHA256(req.body.password).toString(),
+        password: req.body.password,
     };
-    console.log(userModelData);
     UserModel.findOne(userModelData)
         .then((doc) => {
             let success = true;
@@ -87,7 +83,7 @@ router.put("/user", (req, res) => {
     } else {
         userModelData = {
             username: req.body.username,
-            password: CryptoJS.SHA256(req.body.password).toString(),
+            password: req.body.password,
         };
     }
 
