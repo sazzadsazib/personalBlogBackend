@@ -59,15 +59,8 @@ router.get("/getblogs", (req, res) => {
             if (!doc || doc.length === 0) {
                 success = false;
             }
-            let docLocal = doc;
-            docLocal.map((elem) => {
-                elem.blogData = CryptoJS.AES.decrypt(elem.blogData, process.env.ENC_KEY).toString(
-                    CryptoJS.enc.Utf8
-                );
-                return elem;
-            });
 
-            res.status(200).send({ success: success, blogs: docLocal });
+            res.status(200).send({ success: success, blogs: doc });
         })
         .catch((err) => {
             res.status(500).json(err);
