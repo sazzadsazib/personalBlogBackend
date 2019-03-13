@@ -27,10 +27,7 @@ router.post("/blog", (req, res) => {
         } else {
             let blogModelData = {
                 username: req.body.username,
-                blogData: CryptoJS.AES.encrypt(
-                    JSON.stringify(req.body.blogdata),
-                    process.env.ENC_KEY
-                ).toString(),
+                blogData: JSON.stringify(req.body.blogdata),
                 createdAt: new Date(),
             };
             let model = new BlogModel(blogModelData);
@@ -66,26 +63,5 @@ router.get("/getblogs", (req, res) => {
             res.status(500).json(err);
         });
 });
-
-// DELETE
-// router.delete("/user", (req, res) => {
-//     if (!req.body.username) {
-//         return res.status(400).send("Missing body username");
-//     }
-//
-//     UserModel.findOneAndRemove({
-//         username: req.body.username,
-//     })
-//         .then((doc) => {
-//             let success = true;
-//             if (!doc || doc.length === 0) {
-//                 success = false;
-//             }
-//             res.status(200).send({ success: success });
-//         })
-//         .catch((err) => {
-//             res.status(500).json(err);
-//         });
-// });
 
 module.exports = router;
